@@ -45,7 +45,13 @@ class PushCommand extends BaseCommand
             )
         ;
 
-        var_dump($translations);die;
+        $output->writeln('<fg=cyan>Ok, now uploading everything...</>');
+        $provider = $this->get('app.provider.translation');
+
+        foreach ($translations as $slice) {
+            $output->writeln(sprintf('<info>Uploading translations from %s</info>', $slice['file_path']));
+            $provider->upTranslations($slice);
+        }
 
         $output->writeln(sprintf('<fg=cyan>Done.</>'));
     }

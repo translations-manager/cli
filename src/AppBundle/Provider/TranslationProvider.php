@@ -21,4 +21,16 @@ class TranslationProvider extends BaseProvider
             ]
         ]);
     }
+
+    /**
+     * @param array $translations
+     *
+     * @return string
+     */
+    public function upTranslations(array $translations)
+    {
+        return $this->client->post('translations/import', [
+            'form_params' => $translations
+        ]);
+    }
 }
