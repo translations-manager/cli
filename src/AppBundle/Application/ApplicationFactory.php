@@ -3,8 +3,10 @@
 namespace AppBundle\Application;
 
 use AppBundle\Command\PullCommand;
+use AppBundle\Command\PushCommand;
 use AppBundle\DependencyInjection\AppExtension;
 use AppBundle\DependencyInjection\Compiler\FileBuildersPass;
+use AppBundle\DependencyInjection\Compiler\FileParsersPass;
 use AppBundle\DependencyInjection\ConfigurationExtension;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -31,6 +33,7 @@ class ApplicationFactory
         }
 
         $container->addCompilerPass(new FileBuildersPass());
+        $container->addCompilerPass(new FileParsersPass());
         $container->compile();
 
         $application->setContainer($container);
@@ -55,7 +58,8 @@ class ApplicationFactory
     private function getCommands()
     {
         return [
-            new PullCommand
+            new PullCommand,
+            new PushCommand
         ];
     }
 }

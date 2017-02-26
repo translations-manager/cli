@@ -1,3 +1,5 @@
 services:
     app.handler.write_files:
         class: AppBundle\Handler\WriteFilesHandler
+    app.handler.read_files:
+        class: AppBundle\Handler\ReadFilesHandler

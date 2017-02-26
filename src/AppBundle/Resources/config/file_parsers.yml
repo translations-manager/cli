@@ -1,0 +1,5 @@
+services:
+    app.file_parser.xlf:
+        class: AppBundle\FileParser\XlfFileParser
+        tags:
+            - { name: app.file_parser, alias: xlf }
