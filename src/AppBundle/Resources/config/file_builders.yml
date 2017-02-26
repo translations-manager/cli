@@ -1,0 +1,9 @@
+services:
+    app.file_builder.xlf:
+        class: AppBundle\FileBuilder\XlfFileBuilder
+        tags:
+            - { name: app.file_builder, alias: xlf }
+    app.file_builder.yaml:
+        class: AppBundle\FileBuilder\YamlFileBuilder
+        tags:
+            - { name: app.file_builder, alias: yml }

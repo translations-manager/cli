@@ -1,0 +1,9 @@
+services:
+    app.provider.project:
+        class: AppBundle\Provider\ProjectProvider
+        arguments:
+            - "@app.client"
+    app.provider.translation:
+        class: AppBundle\Provider\TranslationProvider
+        arguments:
+            - "@app.client"
