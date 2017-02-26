@@ -4,7 +4,7 @@ namespace AppBundle\FileBuilder;
 
 use Symfony\Component\Yaml\Yaml;
 
-class YamlFileBuilder implements FileBuilderInterface
+class YamlFileBuilder extends AbstractFileBuilder
 {
     /**
      * {@inheritdoc}

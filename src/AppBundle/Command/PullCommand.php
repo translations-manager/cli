@@ -23,15 +23,19 @@ class PullCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $output->writeln('<fg=cyan>Fetching project...</>');
         $project = $this->get('app.provider.project')->getProject($this->getParameter('project_id'));
+        $output->writeln(sprintf('<fg=cyan>Project %s fetched. Fetching translations...</>', $project->name));
 
         $translations = $this->get('app.provider.translation')->getTranslations(
             $this->resolveDomainIds($project),
             $this->resolveFileLocationIds($project),
             $this->resolveLocaleIds($project)
         );
+        $output->writeln(sprintf('<fg=cyan>Translations fetched. Let\'s write the files now...</>', $project->name));
 
         $this->get('app.handler.write_files')->write($translations);
+        $output->writeln(sprintf('<fg=cyan>Done.</>'));
     }
 
     /**

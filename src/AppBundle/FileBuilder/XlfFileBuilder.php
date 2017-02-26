@@ -2,13 +2,16 @@
 
 namespace AppBundle\FileBuilder;
 
-class XlfFileBuilder implements FileBuilderInterface
+class XlfFileBuilder extends AbstractFileBuilder
 {
     /**
      * {@inheritdoc}
      */
     public function build($location, $domain, $locale, array $translations)
     {
+        $outputFile = sprintf('%s/%s.%s.xlf', $location, $domain, $locale);
+        $this->output->writeln(sprintf('<info>Writing file %s</info>', $outputFile));
+
         if (!is_dir($location)) {
             mkdir($location, 0777, true);
         }
@@ -35,6 +38,6 @@ class XlfFileBuilder implements FileBuilderInterface
         $dom = dom_import_simplexml($xliff)->ownerDocument;
         $dom->formatOutput = true;
 
-        $dom->save(sprintf('%s/%s.%s.xlf', $location, $domain, $locale));
+        $dom->save($outputFile);
     }
 }
