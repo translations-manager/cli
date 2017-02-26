@@ -24,14 +24,27 @@ class PullCommand extends BaseCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln('<fg=cyan>Fetching project...</>');
-        $project = $this->get('app.provider.project')->getProject($this->getParameter('project_id'));
+
+        try {
+            $project = $this->get('app.provider.project')->getProject($this->getParameter('project_id'));
+        } catch (\Exception $e) {
+            $output->writeln('<fg=red>Unable to fetch project</>');
+            $output->writeln($e->getMessage());
+            die;
+        }
         $output->writeln(sprintf('<fg=cyan>Project %s fetched. Fetching translations...</>', $project->name));
 
-        $translations = $this->get('app.provider.translation')->getTranslations(
-            $this->resolveDomainIds($project),
-            $this->resolveFileLocationIds($project),
-            $this->resolveLocaleIds($project)
-        );
+        try {
+            $translations = $this->get('app.provider.translation')->getTranslations(
+                $this->resolveDomainIds($project),
+                $this->resolveFileLocationIds($project),
+                $this->resolveLocaleIds($project)
+            );
+        } catch (\Exception $e) {
+            $output->writeln('<fg=red>Unable to fetch translations</>');
+            $output->writeln($e->getMessage());
+            die;
+        }
         $output->writeln(sprintf('<fg=cyan>Translations fetched. Let\'s write the files now...</>', $project->name));
 
         $this->get('app.handler.write_files')->write($translations);
