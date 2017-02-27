@@ -12,14 +12,40 @@ class XlfFileParser extends AbstractFileParser
         $this->output->writeln(sprintf('<info>Reading file %s', $file->getPathname()));
 
         $translations = [];
-        $data = new \SimpleXMLElement(file_get_contents($file->getPathname()));
+        $rawData = file_get_contents($file->getPathname());
+        $rawData = preg_replace_callback('/<!\[CDATA\[(.*)\]\]>/', [$this, 'escapeCDATA'], $rawData);
+        $data = simplexml_load_string($rawData);
         foreach ($data->file->body->{'trans-unit'} as $unit) {
             $translations[] = [
-                'key' => $unit->source->__toString(),
-                'translation' => $unit->target->__toString()
+                'key' => (string) $unit->source,
+                'translation' => preg_replace_callback(
+                    '/CDATA(.*)\\CDATA/',
+                    [$this, 'reverseEscapeCDATA'],
+                    (string) $unit->target
+                )
             ];
         }
 
         return $translations;
+    }
+
+    /**
+     * @param array $matches
+     *
+     * @return string
+     */
+    private function escapeCDATA(array $matches)
+    {
+        return 'CDATA' . htmlspecialchars($matches[1]) . '\CDATA';
+    }
+
+    /**
+     * @param array $matches
+     *
+     * @return string
+     */
+    private function reverseEscapeCDATA(array $matches)
+    {
+        return sprintf('<![CDATA[%s]]>', htmlspecialchars_decode($matches[1]));
     }
 }
