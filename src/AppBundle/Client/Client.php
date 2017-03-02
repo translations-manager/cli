@@ -17,6 +17,16 @@ class Client
     private $port;
 
     /**
+     * @var string
+     */
+    private $username;
+
+    /**
+     * @var string
+     */
+    private $password;
+
+    /**
      * @var GuzzleClient
      */
     private $client;
@@ -28,6 +38,9 @@ class Client
     {
         $this->baseUrl = $serverConfig['host'];
         $this->port = $serverConfig['port'];
+        $this->username = $serverConfig['username'];
+        $this->password = $serverConfig['password'];
+
         $this->client = new GuzzleClient;
     }
 
@@ -39,6 +52,7 @@ class Client
      */
     public function get($uri, $options = [])
     {
+        $this->resolveHeaders($options);
         $response = $this
             ->client
             ->get(sprintf('%s:%d/%s', $this->baseUrl, $this->port, $uri), $options)
@@ -57,6 +71,7 @@ class Client
      */
     public function post($uri, $options = [])
     {
+        $this->resolveHeaders($options);
         $response = $this
             ->client
             ->post(sprintf('%s:%d/%s', $this->baseUrl, $this->port, $uri), $options)
@@ -65,5 +80,16 @@ class Client
         ;
 
         return json_decode($response);
+    }
+
+    /**
+     * @param array $options
+     */
+    private function resolveHeaders(array &$options)
+    {
+        $options['headers'] = array_merge([
+            'X-USERNAME' => $this->username,
+            'X-PASSWORD' => $this->password
+        ], isset($options['headers']) ? $options['headers'] : []);
     }
 }
