@@ -13,13 +13,13 @@ class XlfFileParser extends AbstractFileParser
 
         $translations = [];
         $rawData = file_get_contents($file->getPathname());
-        $rawData = preg_replace_callback('/<!\[CDATA\[(.*)\]\]>/', [$this, 'escapeCDATA'], $rawData);
+        $rawData = preg_replace_callback('/<!\[CDATA\[([^\]]+)\]\]>/', [$this, 'escapeCDATA'], $rawData);
         $data = simplexml_load_string($rawData);
         foreach ($data->file->body->{'trans-unit'} as $unit) {
             $translations[] = [
                 'key' => (string) $unit->source,
                 'translation' => preg_replace_callback(
-                    '/CDATA(.*)\\CDATA/',
+                    '/\[CDATA\](.+)\[ENDCDATA\]/',
                     [$this, 'reverseEscapeCDATA'],
                     (string) $unit->target
                 )
@@ -36,7 +36,7 @@ class XlfFileParser extends AbstractFileParser
      */
     private function escapeCDATA(array $matches)
     {
-        return 'CDATA' . htmlspecialchars($matches[1]) . '\CDATA';
+        return '[CDATA]' . htmlspecialchars($matches[1]) . '[ENDCDATA]';
     }
 
     /**

@@ -2,6 +2,8 @@
 
 namespace AppBundle\FileBuilder;
 
+use AppBundle\Utils\SimpleXMLElement;
+
 class XlfFileBuilder extends AbstractFileBuilder
 {
     /**
@@ -16,7 +18,7 @@ class XlfFileBuilder extends AbstractFileBuilder
             mkdir($location, 0777, true);
         }
 
-        $xliff = new \SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><xliff />');
+        $xliff = new SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><xliff />');
         $xliff->addAttribute('xmlns', 'urn:oasis:names:tc:xliff:document:1.2');
         $xliff->addAttribute('version', '1.2');
 
@@ -32,7 +34,13 @@ class XlfFileBuilder extends AbstractFileBuilder
             $unit->addAttribute('id', md5($translation->key));
             $unit->addAttribute('resname', $translation->key);
             $unit->addChild('source', $translation->key);
-            $unit->addChild('target', $translation->translation);
+            if (preg_match('/<!\[CDATA\[([^\]]+)\]\]>/', $translation->translation)) {
+                /* @var SimpleXMLElement $target */
+                $target = $unit->addChild('target');
+                $target->addCData(preg_replace('/<!\[CDATA\[([^\]]+)\]\]>/', '$1', $translation->translation));
+            } else {
+                $unit->addChild('target', $translation->translation);
+            }
         }
 
         $dom = dom_import_simplexml($xliff)->ownerDocument;
