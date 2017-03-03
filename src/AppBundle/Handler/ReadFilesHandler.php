@@ -26,10 +26,10 @@ class ReadFilesHandler
         $set = [];
         $finder = new Finder();
 
+        $finder->files();
+
         if ($filePatterns) {
-            foreach ($filePatterns as $filePattern) {
-                $finder->path($filePattern);
-            }
+            $finder->append($filePatterns);
         } else {
             foreach ($fileLocations as $fileLocation) {
                 $finder->in($fileLocation);
