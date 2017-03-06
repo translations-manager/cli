@@ -16,13 +16,14 @@ class XlfFileParser extends AbstractFileParser
         $rawData = preg_replace_callback('/<!\[CDATA\[([^\]]+)\]\]>/', [$this, 'escapeCDATA'], $rawData);
         $data = simplexml_load_string($rawData);
         foreach ($data->file->body->{'trans-unit'} as $unit) {
+            $translation = preg_replace_callback(
+                '/\[CDATA\](.*)\[ENDCDATA\]/s',
+                [$this, 'reverseEscapeCDATA'],
+                (string) $unit->target
+            );
             $translations[] = [
                 'key' => (string) $unit->source,
-                'translation' => preg_replace_callback(
-                    '/\[CDATA\](.+)\[ENDCDATA\]/',
-                    [$this, 'reverseEscapeCDATA'],
-                    (string) $unit->target
-                )
+                'translation' => $translation
             ];
         }
 

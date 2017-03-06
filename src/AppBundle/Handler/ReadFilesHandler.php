@@ -45,6 +45,9 @@ class ReadFilesHandler
         }
 
         foreach ($finder as $file) {
+            if (!$file->isFile()) {
+                continue;
+            }
             $set[] = [
                 'translations' => $this->fileParsers['xlf']->parse($file),
                 'file_path' => $file->getPathname(),

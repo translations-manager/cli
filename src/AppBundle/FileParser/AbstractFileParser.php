@@ -2,6 +2,7 @@
 
 namespace AppBundle\FileParser;
 
+use Monolog\Logger;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -12,9 +13,15 @@ abstract class AbstractFileParser implements FileParserInterface
      */
     protected $output;
 
+    /**
+     * @var Logger
+     */
+    protected $logger;
+
     public function __construct()
     {
         $this->output = new ConsoleOutput();
+        $this->logger = new Logger('parser');
     }
 
     /**
