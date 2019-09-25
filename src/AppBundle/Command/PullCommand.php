@@ -47,7 +47,10 @@ class PullCommand extends BaseCommand
         }
         $output->writeln(sprintf('<fg=cyan>Translations fetched. Let\'s write the files now...</>', $project->name));
 
-        $this->get('app.handler.write_files')->write($translations);
+        $this->get('app.handler.write_files')->write(
+            $translations,
+            $this->getParameter('format')
+        );
         $output->writeln(sprintf('<fg=cyan>Done.</>'));
     }
 

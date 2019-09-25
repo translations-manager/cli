@@ -7,3 +7,7 @@ services:
         class: AppBundle\FileBuilder\YamlFileBuilder
         tags:
             - { name: app.file_builder, alias: yml }
+    app.file_builder.json:
+        class: AppBundle\FileBuilder\JsonFileBuilder
+        tags:
+            - { name: app.file_builder, alias: json }
