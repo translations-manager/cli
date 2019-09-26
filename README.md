@@ -13,12 +13,12 @@ server:
     username: test
     password: test
 project_id: 1
-format: json
+format: json # The format of the translation files. Can also be "xlf". Or "yml" but the push is not implemented yet
 ```
 
 ## Commands
 
 ```bash
-trmg pull // Retrieve the translations from the cloud
-trmg push // Push the local translations to the cloud
+trmg pull # Retrieve the translations from the cloud
+trmg push # Push the local translations to the cloud
 ```
