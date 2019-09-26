@@ -15,10 +15,15 @@ class JsonFileBuilder extends AbstractFileBuilder
             mkdir($location, 0777, true);
         }
 
-        $formatted = [];
+        $formatted = [
+            $domain => []
+        ];
         foreach ($translations as $translation) {
             $explodedPath = explode('.', $translation->key);
-            $formatted = array_merge_recursive($formatted, $this->buildPath($explodedPath, $translation->translation));
+            $formatted[$domain] = array_merge_recursive(
+                $formatted[$domain],
+                $this->buildPath($explodedPath, $translation->translation)
+            );
         }
 
         return $formatted;
