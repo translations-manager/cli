@@ -48,7 +48,8 @@ class PushCommand extends BaseCommand
                 $input->getArgument('files'),
                 $this->resolveFileLocations($project),
                 '',
-                ''
+                '',
+                $this->getParameter('format')
             )
         ;
 
@@ -56,7 +57,11 @@ class PushCommand extends BaseCommand
         $provider = $this->get('app.provider.translation');
 
         foreach ($translations as $slice) {
-            $output->writeln(sprintf('<info>Uploading translations from %s</info>', $slice['file_path']));
+            $output->writeln(sprintf(
+                '<info>Uploading translations from %s %s</info>',
+                $slice['file_path'],
+                isset($slice['domain']) ? '(domain ' . $slice['domain'] . ')' : ''
+            ));
             $provider->upTranslations($slice);
         }
 

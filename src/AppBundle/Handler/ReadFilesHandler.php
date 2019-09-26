@@ -18,11 +18,18 @@ class ReadFilesHandler
      * @param array $fileLocations
      * @param string $domainName
      * @param string $localeCode
+     * @param string $format
      *
      * @return array
      */
-    public function read($projectId, array $filePatterns, array $fileLocations = [], $domainName = '', $localeCode = '')
-    {
+    public function read(
+        $projectId,
+        array $filePatterns,
+        array $fileLocations = [],
+        $domainName = '',
+        $localeCode = '',
+        $format = ''
+    ) {
         $set = [];
         $finder = new Finder();
 
@@ -48,11 +55,23 @@ class ReadFilesHandler
             if (!$file->isFile()) {
                 continue;
             }
-            $set[] = [
-                'translations' => $this->fileParsers['xlf']->parse($file),
-                'file_path' => $file->getPathname(),
-                'project_id' => $projectId
-            ];
+
+            if ($format === 'json') {
+                foreach ($this->fileParsers[$format]->parse($file) as $domain => $translations) {
+                    $set[] = [
+                        'translations' => $translations,
+                        'file_path' => $file->getPathname(),
+                        'project_id' => $projectId,
+                        'domain' => $domain
+                    ];
+                }
+            } else {
+                $set[] = [
+                    'translations' => $this->fileParsers[$format]->parse($file),
+                    'file_path' => $file->getPathname(),
+                    'project_id' => $projectId
+                ];
+            }
         }
 
         return $set;

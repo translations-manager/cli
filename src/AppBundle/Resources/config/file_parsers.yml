@@ -3,3 +3,7 @@ services:
         class: AppBundle\FileParser\XlfFileParser
         tags:
             - { name: app.file_parser, alias: xlf }
+    app.file_parser.json:
+        class: AppBundle\FileParser\JsonFileParser
+        tags:
+            - { name: app.file_parser, alias: json }
